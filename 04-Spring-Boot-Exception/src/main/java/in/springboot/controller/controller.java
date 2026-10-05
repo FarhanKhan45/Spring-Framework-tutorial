@@ -1,7 +1,6 @@
 package in.springboot.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,57 +19,59 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/student")
-public class controller{
+public class Controller{
 	
-@Autowired
-private StudentService service;
+	@Autowired
+	private StudentService service;
 	
-//save
-@PostMapping
-public ResponseEntity<Student> save(@Valid @RequestBody Student student){
+	//save
+	@PostMapping
+	public ResponseEntity<Student> save(@Valid @RequestBody Student student ){
+		
+		return ResponseEntity.status(201).body(service.saved(student));
+		
+	}
 	
-	return ResponseEntity.status(201).body(service.save(student));
-}
-
-//fetchall
-@GetMapping
-public List<Student> fetchAll(){
+	//fetchall
+	@GetMapping
+	public List<Student> fetchAll(){
+		
+		return service.fetchAll();
+	}
 	
-	return service.fetchAll();
-}
-
-//fetchByid
-@GetMapping("/{id}")
-public ResponseEntity<Student> fetchById(@PathVariable Long id){
+	//byid
+	@GetMapping("/{id}")
+	public ResponseEntity<Student> byId(@PathVariable Long id){
+		
+		return ResponseEntity.ok(service.byId(id));
+		
+		
+	}
 	
-	Student find=service.byId(id);
-	
-	return ResponseEntity.ok(find);
-
-}
-// update
-@PutMapping("/{id}")
-public ResponseEntity<Student> update(@PathVariable Long id,@RequestBody Student student){
-	Optional<Student> check=service.updated(id, student);
-	
-	 if(check.isEmpty())
-		 return ResponseEntity.notFound().build();
-	 
-	 return ResponseEntity.ok(check.get());
-}
-
-//delete
-@DeleteMapping("/{id}")
-public ResponseEntity<Void> delete(@PathVariable Long id){
-	
-	Optional<Student> deleted=service.delete(id);
-	
-	if(deleted.isEmpty())
-		return ResponseEntity.notFound().build();
-	
-	return ResponseEntity.noContent().build();
-	
-}
-
+	//update
+	@PutMapping("/{id}")
+     public ResponseEntity<Student> update(@PathVariable Long id,@RequestBody Student student){
+		
+		return ResponseEntity.ok(service.update(id, student));
+		
+		
+	}
+     //deletebyid
+	@DeleteMapping("/{id}")
+     public ResponseEntity<Void> deleteById(@PathVariable Long id){
+    	 
+    	 service.deleteById(id);
+ 		
+ 		return ResponseEntity.noContent().build();
+ 		
+ 		
+ 	}
+     @DeleteMapping
+     public ResponseEntity<Void> DeleteAll(){
+ 		
+ 		return ResponseEntity.status(204).build();
+ 		
+ 		
+ 	}
 	
 }

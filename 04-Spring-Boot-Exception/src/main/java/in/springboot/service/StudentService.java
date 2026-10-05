@@ -1,14 +1,16 @@
 package in.springboot.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+
 import in.springboot.entity.Student;
 import in.springboot.exception.StudentNotFoundException;
 import in.springboot.repository.StudentRepository;
+
 @Service
 public class StudentService{
 	
@@ -16,46 +18,46 @@ public class StudentService{
 	private StudentRepository repo;
 	
 	//save
-	public Student save(Student student) {
+	public Student saved(Student student) {
+		
 		return repo.save(student);
 	}
 	
-	//fetch all student
+	//fetchAll
 	public List<Student> fetchAll(){
 		return repo.findAll();
 	}
 	
-	//fetch StudentById
-	public Student byId(Long id){
-		return repo.findById(id).orElseThrow(()-> new StudentNotFoundException("Student not found with id: " +id));
+	//byId
+	public Student byId(Long id) {
+		
+		return repo.findById(id).orElseThrow(()-> new StudentNotFoundException("Student not Found with id: " +id));
 	}
 	
 	//update
-	public Optional<Student> updated(Long id,Student student){
-		Optional<Student> find=repo.findById(id);
+	public Student update(Long id,Student student) {
 		
-		if(find.isEmpty())
-			return Optional.empty();
-		
-		Student existingStudent=find.get();
-		
+		Student existingStudent=repo.findById(id).orElseThrow(()->new StudentNotFoundException("Student not Found with id: " +id));
+		  
 		existingStudent.setAge(student.getAge());
 		existingStudent.setCourse(student.getCourse());
 		existingStudent.setEmail(student.getEmail());
 		existingStudent.setName(student.getName());
 		
-		return Optional.of(repo.save(existingStudent));
+		return repo.save(existingStudent);}
 	
-	}
-	
-	//delete
-	public Optional<Student> delete(Long id){
-		Optional<Student> check= repo.findById(id);
+	//deleteById
+	public void deleteById(Long id) {
 		
-		if(check.isEmpty())
-			return Optional.empty();
+		repo.findById(id).orElseThrow(()-> new StudentNotFoundException("Student not Found with id: " +id));
 		
 		repo.deleteById(id);
-		return check;
+	
 	}
+	
+	public void deleteAll() {
+		repo.deleteAll();
+		
+	}
+	
 }
